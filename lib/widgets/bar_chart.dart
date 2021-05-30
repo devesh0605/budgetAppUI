@@ -51,7 +51,7 @@ class BarChart extends StatelessWidget {
                   'Nov 10, 2021 - Nov 16, 2021',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontSize: 18.0,
+                      fontSize: 15.0,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 1.2),
                 ),
