@@ -19,10 +19,13 @@ class BarChart extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             'Weekly Spending',
+            textAlign: TextAlign.center,
             style: TextStyle(
+              color: Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: 20.0,
               letterSpacing: 1.2,

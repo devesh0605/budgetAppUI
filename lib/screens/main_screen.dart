@@ -1,4 +1,5 @@
 import 'package:budget_app_ui/data/data.dart';
+import 'package:budget_app_ui/helpers/color_helper.dart';
 import 'package:budget_app_ui/models/category_model.dart';
 import 'package:budget_app_ui/models/expense_model.dart';
 import 'package:budget_app_ui/widgets/bar_chart.dart';
@@ -12,6 +13,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   _buildCategory(Category category, double totalAmountSpent) {
     return Container(
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
           color: Colors.white,
@@ -46,6 +48,39 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ),
             ],
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              final double maxBarWidth = constraints.maxWidth;
+              final double percent =
+                  (category.maxAmount - totalAmountSpent) / category.maxAmount;
+              double barWidth = maxBarWidth * percent;
+              if (barWidth < 0) {
+                barWidth = 0;
+              }
+              return Stack(
+                children: [
+                  Container(
+                    height: 20.0,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                  ),
+                  Container(
+                    width: barWidth,
+                    height: 20.0,
+                    decoration: BoxDecoration(
+                      color: getColor(context, percent),
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                  )
+                ],
+              );
+            },
           )
         ],
       ),
@@ -56,21 +91,39 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
+        physics: BouncingScrollPhysics(),
         slivers: [
           SliverAppBar(
             pinned: true,
             forceElevated: true,
             floating: true,
-            expandedHeight: 100.0,
+            expandedHeight: 420.0,
             leading: IconButton(
               icon: Icon(Icons.settings),
               iconSize: 30.0,
               onPressed: () {},
             ),
             flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                margin: EdgeInsets.all(10.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(0, 2),
+                        blurRadius: 6.0)
+                  ],
+                ),
+                child: BarChart(
+                  expenses: weeklySpending,
+                ),
+              ),
               centerTitle: true,
               title: Text(
-                'Simple Budget',
+                'Weekly Spending',
+                style: TextStyle(color: Colors.black),
                 //textAlign: TextAlign.center,
               ),
             ),
@@ -85,33 +138,14 @@ class _MainScreenState extends State<MainScreen> {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                if (index == 0) {
-                  return Container(
-                    margin: EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black12,
-                            offset: Offset(0, 2),
-                            blurRadius: 6.0)
-                      ],
-                    ),
-                    child: BarChart(
-                      expenses: weeklySpending,
-                    ),
-                  );
-                } else {
-                  final Category category = categories[index - 1];
-                  double totalAmountSpent = 0.0;
-                  category.expenses.forEach((Expense expense) {
-                    totalAmountSpent += expense.cost;
-                  });
-                  return _buildCategory(category, totalAmountSpent);
-                }
+                final Category category = categories[index];
+                double totalAmountSpent = 0.0;
+                category.expenses.forEach((Expense expense) {
+                  totalAmountSpent += expense.cost;
+                });
+                return _buildCategory(category, totalAmountSpent);
               },
-              childCount: 1 + categories.length,
+              childCount: categories.length,
             ),
           )
         ],
