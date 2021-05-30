@@ -1,3 +1,5 @@
+import 'package:budget_app_ui/data/data.dart';
+import 'package:budget_app_ui/widgets/bar_chart.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {
@@ -41,11 +43,22 @@ class _MainScreenState extends State<MainScreen> {
               (context, index) {
                 return Container(
                   margin: EdgeInsets.all(10.0),
-                  height: 100.0,
-                  color: Colors.red,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black12,
+                          offset: Offset(0, 2),
+                          blurRadius: 6.0)
+                    ],
+                  ),
+                  child: BarChart(
+                    expenses: weeklySpending,
+                  ),
                 );
               },
-              childCount: 10,
+              childCount: 1,
             ),
           )
         ],
